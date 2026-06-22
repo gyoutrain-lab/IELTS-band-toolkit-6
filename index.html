@@ -18,7 +18,7 @@
     <h1>Advanced Band 9 Architect</h1>
     <div class="drill-box">
         <label><strong>Select Competency:</strong></label>
-        <select id="competency" onchange="loadPrompt()">
+        <select id="competency" onchange="resetAndLoad()">
             <option value="inversion">1. Complex Inversion & Emphasis</option>
             <option value="subjunctive">2. Advanced Subjunctive & Hypothetical</option>
             <option value="register">3. Academic Register & Nominalization</option>
@@ -27,42 +27,95 @@
         
         <div id="guideBox" class="guide-box"></div>
         <p id="promptDisplay"></p>
-        <textarea id="userInput" rows="4" placeholder="Draft your Band 9 complex sentence here..."></textarea>
+        <textarea id="userInput" rows="4" placeholder="Draft your Band 9 complex sentence here using the specific options provided..."></textarea>
         <button onclick="auditSubmission()">Audit Professionalism</button>
         <div id="feedback"></div>
     </div>
 
     <script>
         const library = {
-            inversion: ["If clinical negligence persists, the hospital faces major lawsuits.", "If modern medical training is ignored, the standard of care falls.", "If the government fails to regulate, the crisis will worsen.", "If hospitals do not invest in tech, efficiency will decrease.", "If the staff are not supported, morale will likely drop."],
-            subjunctive: ["If the hospital had enough budget, the crisis would end.", "If the staff were motivated, the productivity would be higher.", "If the government were to intervene, the system would stabilize.", "If clinicians had been aware, the diagnostic error would be avoided.", "If education were centralized, the workforce would be more capable."],
-            register: ["The nurse did a lot of work to make the patient feel better.", "The hospital is good at helping sick people get better fast.", "The new policy will help fix the big problems in healthcare.", "Using the internet makes the information easy to find for all.", "The way the hospital manages money is a problem."],
-            connectors: ["Automation replaces human labor. It also raises ethical concerns.", "Medical tourism is increasing. It is a source of revenue.", "The cost of living is rising. Many families struggle.", "Online learning is popular. It has some major drawbacks.", "Public transport is essential. It reduces traffic congestion."]
+            inversion: [
+                "If clinical negligence persists, the hospital faces major lawsuits.", 
+                "If modern medical training is ignored, the standard of care falls.", 
+                "If the government fails to regulate, the crisis will worsen.", 
+                "If hospitals do not invest in tech, efficiency will decrease.", 
+                "If the staff are not supported, morale will likely drop."
+            ],
+            subjunctive: [
+                "If the hospital had enough budget, the crisis would end.", 
+                "If the staff were motivated, the productivity would be higher.", 
+                "If the government were to intervene, the system would stabilize.", 
+                "If clinicians had been aware, the diagnostic error would be avoided.", 
+                "If education were centralized, the workforce would be more capable."
+            ],
+            register: [
+                "The nurse did a lot of work to make the patient feel better.", 
+                "The hospital is good at helping sick people get better fast.", 
+                "The new policy will help fix the big problems in healthcare.", 
+                "Using the internet makes the information easy to find for all.", 
+                "The way the hospital manages money is a problem."
+            ],
+            connectors: [
+                "Automation replaces human labor. It also raises ethical concerns.", 
+                "Medical tourism is increasing. It is a source of revenue.", 
+                "The cost of living is rising. Many families struggle.", 
+                "Online learning is popular. It has some major drawbacks.", 
+                "Public transport is essential. It reduces traffic congestion."
+            ]
         };
 
+        // Guides are now arrays directly correlated index-by-index with the prompts above.
         const guides = {
-            inversion: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Employ 'Not only... but also', 'Never before', 'Rarely'.<br>• <b>Verb Choice:</b> Use strong verbs (e.g., <i>precipitates, exacerbates</i>).<br>• <b>Goal:</b> Shift the focus to the impact, not the actor.",
-            subjunctive: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Utilize 'Had [Subject] been...', 'Were [Subject] to...'.<br>• <b>Nominalization:</b> Focus on abstract nouns (e.g., <i>operational efficacy, diagnostic accuracy</i>).<br>• <b>Goal:</b> Create a high-level hypothetical framework.",
-            register: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Remove all phrasal verbs and contractions.<br>• <b>Lexical Density:</b> Replace basic adjectives (good/bad) with technical terms (e.g., <i>suboptimal, advantageous, detrimental</i>).<br>• <b>Goal:</b> Impersonal, objective tone.",
-            connectors: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Use correlative conjunctions and sophisticated transitions.<br>• <b>Flow:</b> Ensure discourse markers (e.g., <i>consequently, notwithstanding, conversely</i>) bridge complex ideas.<br>• <b>Goal:</b> Seamless, high-cohesion logical flow."
+            inversion: [
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Should clinical negligence persist...</i><br>• <b>Target Lexicon:</b> Replace 'major lawsuits' with <i>severe litigious repercussions</i> or <i>institutional liability</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Under no circumstances should...</i><br>• <b>Target Lexicon:</b> Replace 'standard of care falls' with <i>compromised clinical outcomes</i> or <i>suboptimal patient care</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Rarely does an unregulated sector...</i><br>• <b>Target Lexicon:</b> Replace 'crisis will worsen' with <i>precipitate a systemic collapse</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Only by allocating capital toward...</i><br>• <b>Target Lexicon:</b> Replace 'efficiency will decrease' with <i>prevent the degradation of operational efficacy</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Seldom is optimal morale sustained when...</i><br>• <b>Target Lexicon:</b> Replace 'staff are not supported' with <i>personnel lack institutional backing</i>."
+            ],
+            subjunctive: [
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Were the institution to be endowed with...</i><br>• <b>Target Lexicon:</b> Replace 'enough budget' with <i>adequate fiscal resources</i>; replace 'crisis would end' with <i>alleviate the systemic exigency</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Had the personnel been adequately incentivized...</i><br>• <b>Target Lexicon:</b> Replace 'productivity' with <i>clinical output</i> or <i>operational throughput</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Should state-level intervention occur...</i><br>• <b>Target Lexicon:</b> Replace 'system would stabilize' with <i>foster structural equilibrium</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Had the attending practitioners been cognizant of...</i><br>• <b>Target Lexicon:</b> Replace 'avoided' with <i>successfully circumvented</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Start:</b> <i>Were pedagogical frameworks to be standardized...</i><br>• <b>Target Lexicon:</b> Replace 'more capable' with <i>exhibit heightened professional competency</i>."
+            ],
+            register: [
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Shift:</b> Remove personal subject where possible.<br>• <b>Target Lexicon:</b> Replace 'did a lot of work' with <i>undertook rigorous clinical interventions</i>; replace 'feel better' with <i>optimize patient recovery</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Shift:</b> Nominalize the action.<br>• <b>Target Lexicon:</b> Replace 'is good at' with <i>demonstrates exceptional proficiency in</i>; replace 'helping sick people get better fast' with <i>facilitating expedited patient rehabilitation</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Shift:</b> Focus on the policy's function.<br>• <b>Target Lexicon:</b> Replace 'help fix big problems' with <i>mitigate prevailing systemic deficiencies</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Shift:</b> Passive voice emphasis.<br>• <b>Target Lexicon:</b> Replace 'easy to find' with <i>facilitates unprecedented accessibility to data</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax Shift:</b> Formal noun phrasing.<br>• <b>Target Lexicon:</b> Replace 'manages money' with <i>fiscal administration</i>; replace 'is a problem' with <i>presents a substantial institutional vulnerability</i>."
+            ],
+            connectors: [
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax:</b> <i>While [Action A], it concurrently [Action B].</i><br>• <b>Target Lexicon:</b> Replace 'replaces human labor' with <i>supplants the manual workforce</i>; replace 'ethical concerns' with <i>profound moral dilemmas</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax:</b> <i>Not only is [Action A], but it also serves as...</i><br>• <b>Target Lexicon:</b> Replace 'source of revenue' with <i>lucrative mechanism for capital generation</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax:</b> <i>Consequently, due to [Cause], [Effect]...</i><br>• <b>Target Lexicon:</b> Replace 'cost of living' with <i>escalating socioeconomic pressures</i>; replace 'families struggle' with <i>exacerbate domestic financial instability</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax:</b> <i>Notwithstanding the prevalence of [Action A], it...</i><br>• <b>Target Lexicon:</b> Replace 'popular' with <i>ubiquitous</i>; replace 'major drawbacks' with <i>inherent pedagogical limitations</i>.",
+                "<b>Architectural Blueprint:</b><br>• <b>Syntax:</b> <i>Given its capacity to [Action B], [Action A] is...</i><br>• <b>Target Lexicon:</b> Replace 'essential' with <i>indispensable</i>; replace 'reduces traffic' with <i>mitigates urban vehicular congestion</i>."
+            ]
         };
 
         let currentIdx = 0;
+        function resetAndLoad() { currentIdx = 0; loadPrompt(); }
+        
         function loadPrompt() {
             const comp = document.getElementById('competency').value;
+            // The guide now dynamically loads the exact index matching the prompt
             document.getElementById('promptDisplay').innerHTML = "<strong>Prompt: Rewrite (Aim for Band 9): </strong>" + library[comp][currentIdx];
-            document.getElementById('guideBox').innerHTML = guides[comp];
+            document.getElementById('guideBox').innerHTML = guides[comp][currentIdx];
         }
 
         function auditSubmission() {
             const input = document.getElementById('userInput').value.trim();
             const feedback = document.getElementById('feedback');
-            const isBand9 = input.length > 80 && !input.match(/good|bad|people|easy|checked|fix|help|thing/i);
+            // Strict filter to ensure basic words are eliminated
+            const isBand9 = input.length > 75 && !input.match(/\b(good|bad|people|easy|checked|fix|help|thing|big|fast|sick)\b/i);
             
             feedback.innerHTML = `<strong>Audit Results:</strong><br>
-                ${isBand9 ? "<span class='correct'>✓ Masterful: High-feature syntactic architecture detected.</span>" : "<span class='wrong'>" + input + "</span><br><br>✓ Correction required: Focus on the architectural guide above."}<br>
+                ${isBand9 ? "<span class='correct'>✓ Masterful: High-feature syntactic architecture detected.</span>" : "<span class='wrong'>" + input + "</span><br><br>✓ Correction required: Integrate the explicit target lexicon from the blueprint above."}<br>
                 <strong>Scoring: ${isBand9 ? "Band 9" : "Band 6/7"}</strong><br>
-                <em>${isBand9 ? "Excellent deployment of formal academic structures." : "Constraint: Avoid generic lexicon. Incorporate the specified 'Blueprint' markers."}</em>
+                <em>${isBand9 ? "Excellent deployment of formal academic structures." : "Constraint: You must extract and apply the specific vocabulary provided in the blueprint to bypass the Band 6 filter."}</em>
                 <br><button onclick="nextPrompt()">Next Prompt</button>`;
         }
 
@@ -70,8 +123,10 @@
             currentIdx = (currentIdx + 1) % 5;
             loadPrompt();
             document.getElementById('userInput').value = '';
-            feedback.innerHTML = '';
+            document.getElementById('feedback').innerHTML = '';
         }
+        
+        // Load on startup
         loadPrompt();
     </script>
 </body>
