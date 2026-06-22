@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Band 9 Clinical Grammar Laboratory</title>
+    <title>Advanced Band 9 Architect</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; max-width: 900px; margin: 40px auto; padding: 20px; background: #f4f7f6; }
         .drill-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -18,7 +18,7 @@
     <h1>Advanced Band 9 Architect</h1>
     <div class="drill-box">
         <label><strong>Select Competency:</strong></label>
-        <select id="competency" onchange="resetAndLoad()">
+        <select id="competency" onchange="loadPrompt()">
             <option value="inversion">1. Complex Inversion & Emphasis</option>
             <option value="subjunctive">2. Advanced Subjunctive & Hypothetical</option>
             <option value="register">3. Academic Register & Nominalization</option>
@@ -34,10 +34,10 @@
 
     <script>
         const library = {
-            inversion: ["If clinical negligence persists, the hospital faces major lawsuits.", "If modern medical training is ignored, the standard of care falls.", "If the government fails to regulate, the crisis will worsen.", "If hospitals do not invest in tech, efficiency will decrease.", "If the staff are not supported, morale will likely drop.", "If policies remain outdated, medical outcomes will be poor.", "If we do not address inequality, access will be limited.", "If public awareness is ignored, preventative care will fail.", "If research funding is cut, innovation will disappear.", "If communication is not standardized, errors are common."],
-            subjunctive: ["If the hospital had enough budget, the crisis would end.", "If the staff were motivated, the productivity would be higher.", "If the government were to intervene, the system would stabilize.", "If clinicians had been aware, the diagnostic error would be avoided.", "If education were centralized, the workforce would be more capable.", "If regulations were strictly enforced, the hazards would diminish.", "If patients were fully involved, treatment success would rise.", "If funding had been allocated sooner, the facility would be ready.", "If leadership were to delegate, the process would be smoother.", "If the clinic had followed guidelines, the risk would be zero."],
-            register: ["The nurse did a lot of work to make the patient feel better.", "The hospital is good at helping sick people get better fast.", "The new policy will help fix the big problems in healthcare.", "Using the internet makes the information easy to find for all.", "The way the hospital manages money is a bit of a problem.", "Teachers want to make the study plan more interesting now.", "Many people think that learning skills is very helpful today.", "The city is planning to build more roads for the traffic.", "The doctor saw that the test results were not good enough.", "We need to find a way to stop the pollution in the city."],
-            connectors: ["Automation replaces human labor. It also raises ethical concerns.", "Medical tourism is increasing. It is a source of revenue.", "The cost of living is rising. Many families struggle.", "Online learning is popular. It has some major drawbacks.", "Public transport is essential. It reduces traffic congestion.", "Urbanization is accelerating. It affects the environment.", "Strict laws are needed. They prevent corporate corruption.", "Globalization is beneficial. It creates cultural gaps.", "Mental health is vital. It is often misunderstood.", "Scientific research is key. It helps solve pandemics."]
+            inversion: ["If clinical negligence persists, the hospital faces major lawsuits.", "If modern medical training is ignored, the standard of care falls.", "If the government fails to regulate, the crisis will worsen.", "If hospitals do not invest in tech, efficiency will decrease.", "If the staff are not supported, morale will likely drop."],
+            subjunctive: ["If the hospital had enough budget, the crisis would end.", "If the staff were motivated, the productivity would be higher.", "If the government were to intervene, the system would stabilize.", "If clinicians had been aware, the diagnostic error would be avoided.", "If education were centralized, the workforce would be more capable."],
+            register: ["The nurse did a lot of work to make the patient feel better.", "The hospital is good at helping sick people get better fast.", "The new policy will help fix the big problems in healthcare.", "Using the internet makes the information easy to find for all.", "The way the hospital manages money is a problem."],
+            connectors: ["Automation replaces human labor. It also raises ethical concerns.", "Medical tourism is increasing. It is a source of revenue.", "The cost of living is rising. Many families struggle.", "Online learning is popular. It has some major drawbacks.", "Public transport is essential. It reduces traffic congestion."]
         };
 
         const guides = {
@@ -48,7 +48,6 @@
         };
 
         let currentIdx = 0;
-        function resetAndLoad() { currentIdx = 0; loadPrompt(); }
         function loadPrompt() {
             const comp = document.getElementById('competency').value;
             document.getElementById('promptDisplay').innerHTML = "<strong>Prompt: Rewrite (Aim for Band 9): </strong>" + library[comp][currentIdx];
@@ -68,7 +67,7 @@
         }
 
         function nextPrompt() {
-            currentIdx = (currentIdx + 1) % 10;
+            currentIdx = (currentIdx + 1) % 5;
             loadPrompt();
             document.getElementById('userInput').value = '';
             feedback.innerHTML = '';
