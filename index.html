@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Band 9 Clinical Grammar Laboratory</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; max-width: 900px; margin: 40px auto; padding: 20px; background: #f4f7f6; }
+        .drill-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .guide-box { background: #eef7ff; padding: 20px; border-left: 6px solid #2980b9; margin-bottom: 20px; font-size: 0.95em; line-height: 1.7; }
+        select, textarea { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { background: #2c3e50; color: white; padding: 14px 28px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .wrong { color: #c0392b; text-decoration: line-through; }
+        .correct { color: #27ae60; font-weight: bold; }
+        #feedback { margin-top: 25px; padding: 20px; border-radius: 6px; background: #fff; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Advanced Band 9 Architect</h1>
+    <div class="drill-box">
+        <label><strong>Select Competency:</strong></label>
+        <select id="competency" onchange="resetAndLoad()">
+            <option value="inversion">1. Complex Inversion & Emphasis</option>
+            <option value="subjunctive">2. Advanced Subjunctive & Hypothetical</option>
+            <option value="register">3. Academic Register & Nominalization</option>
+            <option value="connectors">4. Logical Connectors & Discourse Markers</option>
+        </select>
+        
+        <div id="guideBox" class="guide-box"></div>
+        <p id="promptDisplay"></p>
+        <textarea id="userInput" rows="4" placeholder="Draft your Band 9 complex sentence here..."></textarea>
+        <button onclick="auditSubmission()">Audit Professionalism</button>
+        <div id="feedback"></div>
+    </div>
+
+    <script>
+        const library = {
+            inversion: ["If clinical negligence persists, the hospital faces major lawsuits.", "If modern medical training is ignored, the standard of care falls.", "If the government fails to regulate, the crisis will worsen.", "If hospitals do not invest in tech, efficiency will decrease.", "If the staff are not supported, morale will likely drop.", "If policies remain outdated, medical outcomes will be poor.", "If we do not address inequality, access will be limited.", "If public awareness is ignored, preventative care will fail.", "If research funding is cut, innovation will disappear.", "If communication is not standardized, errors are common."],
+            subjunctive: ["If the hospital had enough budget, the crisis would end.", "If the staff were motivated, the productivity would be higher.", "If the government were to intervene, the system would stabilize.", "If clinicians had been aware, the diagnostic error would be avoided.", "If education were centralized, the workforce would be more capable.", "If regulations were strictly enforced, the hazards would diminish.", "If patients were fully involved, treatment success would rise.", "If funding had been allocated sooner, the facility would be ready.", "If leadership were to delegate, the process would be smoother.", "If the clinic had followed guidelines, the risk would be zero."],
+            register: ["The nurse did a lot of work to make the patient feel better.", "The hospital is good at helping sick people get better fast.", "The new policy will help fix the big problems in healthcare.", "Using the internet makes the information easy to find for all.", "The way the hospital manages money is a bit of a problem.", "Teachers want to make the study plan more interesting now.", "Many people think that learning skills is very helpful today.", "The city is planning to build more roads for the traffic.", "The doctor saw that the test results were not good enough.", "We need to find a way to stop the pollution in the city."],
+            connectors: ["Automation replaces human labor. It also raises ethical concerns.", "Medical tourism is increasing. It is a source of revenue.", "The cost of living is rising. Many families struggle.", "Online learning is popular. It has some major drawbacks.", "Public transport is essential. It reduces traffic congestion.", "Urbanization is accelerating. It affects the environment.", "Strict laws are needed. They prevent corporate corruption.", "Globalization is beneficial. It creates cultural gaps.", "Mental health is vital. It is often misunderstood.", "Scientific research is key. It helps solve pandemics."]
+        };
+
+        const guides = {
+            inversion: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Employ 'Not only... but also', 'Never before', 'Rarely'.<br>• <b>Verb Choice:</b> Use strong verbs (e.g., <i>precipitates, exacerbates</i>).<br>• <b>Goal:</b> Shift the focus to the impact, not the actor.",
+            subjunctive: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Utilize 'Had [Subject] been...', 'Were [Subject] to...'.<br>• <b>Nominalization:</b> Focus on abstract nouns (e.g., <i>operational efficacy, diagnostic accuracy</i>).<br>• <b>Goal:</b> Create a high-level hypothetical framework.",
+            register: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Remove all phrasal verbs and contractions.<br>• <b>Lexical Density:</b> Replace basic adjectives (good/bad) with technical terms (e.g., <i>suboptimal, advantageous, detrimental</i>).<br>• <b>Goal:</b> Impersonal, objective tone.",
+            connectors: "<b>Architectural Guide:</b><br>• <b>Syntax:</b> Use correlative conjunctions and sophisticated transitions.<br>• <b>Flow:</b> Ensure discourse markers (e.g., <i>consequently, notwithstanding, conversely</i>) bridge complex ideas.<br>• <b>Goal:</b> Seamless, high-cohesion logical flow."
+        };
+
+        let currentIdx = 0;
+        function resetAndLoad() { currentIdx = 0; loadPrompt(); }
+        function loadPrompt() {
+            const comp = document.getElementById('competency').value;
+            document.getElementById('promptDisplay').innerHTML = "<strong>Prompt: Rewrite (Aim for Band 9): </strong>" + library[comp][currentIdx];
+            document.getElementById('guideBox').innerHTML = guides[comp];
+        }
+
+        function auditSubmission() {
+            const input = document.getElementById('userInput').value.trim();
+            const feedback = document.getElementById('feedback');
+            const isBand9 = input.length > 80 && !input.match(/good|bad|people|easy|checked|fix|help|thing/i);
+            
+            feedback.innerHTML = `<strong>Audit Results:</strong><br>
+                ${isBand9 ? "<span class='correct'>✓ Masterful: High-feature syntactic architecture detected.</span>" : "<span class='wrong'>" + input + "</span><br><br>✓ Correction required: Focus on the architectural guide above."}<br>
+                <strong>Scoring: ${isBand9 ? "Band 9" : "Band 6/7"}</strong><br>
+                <em>${isBand9 ? "Excellent deployment of formal academic structures." : "Constraint: Avoid generic lexicon. Incorporate the specified 'Blueprint' markers."}</em>
+                <br><button onclick="nextPrompt()">Next Prompt</button>`;
+        }
+
+        function nextPrompt() {
+            currentIdx = (currentIdx + 1) % 10;
+            loadPrompt();
+            document.getElementById('userInput').value = '';
+            feedback.innerHTML = '';
+        }
+        loadPrompt();
+    </script>
+</body>
+</html>
